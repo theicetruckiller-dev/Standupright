@@ -1,0 +1,468 @@
+-- Stand Upright: Rebooted | 847q OWNER GUI [FULL OTOMATİK]
+-- Tüm fonksiyonlar, dungeon/item/boss farm, skill seçimi, webhook sistemi ile
+
+local UIS = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local CoreGui = game:GetService("CoreGui")
+
+-- Webhook vars
+local webhookURL = ""
+local webhookOptions = {
+	bossItem = true,
+	worldItem = true,
+	test = false,
+}
+local function sendWebhook(msg)
+	if webhookURL == "" then return end
+	local http = (syn and syn.request) or (http and http.request) or http_request or request
+	if not http then return end
+	local data = {
+		content = "@everyone\n"..msg
+	}
+	http({
+		Url = webhookURL,
+		Method = "POST",
+		Headers = {["Content-Type"] = "application/json"},
+		Body = game:GetService("HttpService"):JSONEncode(data)
+	})
+end
+
+-- Main GUI
+local MainGui = Instance.new("ScreenGui")
+MainGui.Name = "MainGui847q"
+MainGui.Parent = CoreGui
+MainGui.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame", MainGui)
+Frame.BackgroundColor3 = Color3.fromRGB(33,33,33)
+Frame.BorderColor3 = Color3.fromRGB(33,33,33)
+Frame.BorderSizePixel = 4
+Frame.Position = UDim2.new(0.07,0,0.23,0)
+Frame.Size = UDim2.new(0.28,0,0.61,0)
+Frame.Active = true
+
+local Owner = Instance.new("TextLabel", Frame)
+Owner.BackgroundTransparency = 1
+Owner.Position = UDim2.new(0,0,0,-30)
+Owner.Size = UDim2.new(1,0,0,26)
+Owner.Font = Enum.Font.GothamBold
+Owner.Text = "847q | OWNER"
+Owner.TextColor3 = Color3.fromRGB(0,255,127)
+Owner.TextStrokeTransparency = 0.7
+Owner.TextScaled = true
+
+local Title = Instance.new("TextLabel", Frame)
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0,0,0,-7)
+Title.Size = UDim2.new(1,0,0,28)
+Title.Font = Enum.Font.Gotham
+Title.Text = "FULL OTOMATİK FARM PANELİ"
+Title.TextColor3 = Color3.fromRGB(255,85,127)
+Title.TextScaled = true
+
+local TabFullAuto = Instance.new("TextButton", Frame)
+TabFullAuto.Size = UDim2.new(0.45,0,0.07,0)
+TabFullAuto.Position = UDim2.new(0.03,0,0.08,0)
+TabFullAuto.BackgroundColor3 = Color3.fromRGB(255,85,127)
+TabFullAuto.Font = Enum.Font.Gotham
+TabFullAuto.Text = "Full Otomatik"
+TabFullAuto.TextColor3 = Color3.fromRGB(255,255,255)
+TabFullAuto.TextSize = 15
+
+local TabWebhook = Instance.new("TextButton", Frame)
+TabWebhook.Size = UDim2.new(0.45,0,0.07,0)
+TabWebhook.Position = UDim2.new(0.52,0,0.08,0)
+TabWebhook.BackgroundColor3 = Color3.fromRGB(127,85,255)
+TabWebhook.Font = Enum.Font.Gotham
+TabWebhook.Text = "Webhook"
+TabWebhook.TextColor3 = Color3.fromRGB(255,255,255)
+TabWebhook.TextSize = 15
+
+-- Main Panel
+local PanelAuto = Instance.new("Frame", Frame)
+PanelAuto.BackgroundTransparency = 1
+PanelAuto.Size = UDim2.new(1,0,0.89,0)
+PanelAuto.Position = UDim2.new(0,0,0.15,0)
+
+local PanelWebhook = Instance.new("Frame", Frame)
+PanelWebhook.BackgroundTransparency = 1
+PanelWebhook.Size = UDim2.new(1,0,0.89,0)
+PanelWebhook.Position = UDim2.new(0,0,0.15,0)
+PanelWebhook.Visible = false
+
+local function showTab(tab)
+	PanelAuto.Visible = (tab == 1)
+	PanelWebhook.Visible = (tab == 2)
+end
+TabFullAuto.MouseButton1Click:Connect(function() showTab(1) end)
+TabWebhook.MouseButton1Click:Connect(function() showTab(2) end)
+showTab(1)
+
+-- Dungeon/Item/Boss Seçim Listeleri (örnek)
+local dungeons = {"Egyptian Dungeon","Heaven Dungeon","Steel Ball Run","Alternate Dungeon"}
+local bosses = {"DIO","Kars","Heaven Ascension DIO"}
+local bossItems = {"DIO's Diary","Kars Mask","Heaven Arrow"}
+local worldItems = {"Stand Arrow","Rokakaka","Cursed Orb","Requiem Arrow","Green Baby"}
+
+local selectedDungeon = dungeons[1]
+local farmBosses = {}
+local farmWorldItems = {}
+
+local autoFarmActive = false
+local statusText = "Hazır"
+
+-- Dungeon Dropdown
+local DungeonLabel = Instance.new("TextLabel", PanelAuto)
+DungeonLabel.Text = "Dungeon Seç:"
+DungeonLabel.Size = UDim2.new(0.4,0,0.06,0)
+DungeonLabel.Position = UDim2.new(0.03,0,0.02,0)
+DungeonLabel.BackgroundTransparency = 1
+DungeonLabel.Font = Enum.Font.Gotham
+DungeonLabel.TextColor3 = Color3.fromRGB(255,255,255)
+DungeonLabel.TextScaled = true
+
+local DungeonDrop = Instance.new("TextButton", PanelAuto)
+DungeonDrop.Text = selectedDungeon
+DungeonDrop.Size = UDim2.new(0.5,0,0.06,0)
+DungeonDrop.Position = UDim2.new(0.45,0,0.02,0)
+DungeonDrop.BackgroundColor3 = Color3.fromRGB(42,42,42)
+DungeonDrop.Font = Enum.Font.Gotham
+DungeonDrop.TextColor3 = Color3.fromRGB(255,255,255)
+DungeonDrop.TextScaled = true
+
+local DungeonList = Instance.new("Frame", PanelAuto)
+DungeonList.Visible = false
+DungeonList.Size = UDim2.new(0.5,0,0.22,0)
+DungeonList.Position = UDim2.new(0.45,0,0.08,0)
+DungeonList.BackgroundColor3 = Color3.fromRGB(33,33,44)
+DungeonDrop.MouseButton1Click:Connect(function()
+	DungeonList.Visible = not DungeonList.Visible
+end)
+for i,dn in ipairs(dungeons) do
+	local btn = Instance.new("TextButton", DungeonList)
+	btn.Size = UDim2.new(1,0,1/#dungeons,0)
+	btn.Position = UDim2.new(0,0,(i-1)/#dungeons,0)
+	btn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+	btn.Text = dn
+	btn.Font = Enum.Font.Gotham
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.TextScaled = true
+	btn.MouseButton1Click:Connect(function()
+		selectedDungeon = dn
+		DungeonDrop.Text = dn
+		DungeonList.Visible = false
+	end)
+end
+
+-- Bosslar
+local BossLabel = Instance.new("TextLabel", PanelAuto)
+BossLabel.Text = "Farmlanacak Bosslar:"
+BossLabel.Size = UDim2.new(0.6,0,0.06,0)
+BossLabel.Position = UDim2.new(0.03,0,0.26,0)
+BossLabel.BackgroundTransparency = 1
+BossLabel.Font = Enum.Font.Gotham
+BossLabel.TextColor3 = Color3.fromRGB(255,255,255)
+BossLabel.TextScaled = true
+
+local BossList = Instance.new("Frame", PanelAuto)
+BossList.Size = UDim2.new(0.94,0,0.12,0)
+BossList.Position = UDim2.new(0.03,0,0.32,0)
+BossList.BackgroundColor3 = Color3.fromRGB(33,33,44)
+
+for i,boss in ipairs(bosses) do
+	local cb = Instance.new("TextButton", BossList)
+	cb.Name = boss
+	cb.Size = UDim2.new(1/#bosses,0,1,0)
+	cb.Position = UDim2.new((i-1)/#bosses,0,0,0)
+	cb.Text = boss
+	cb.BackgroundColor3 = Color3.fromRGB(42,42,42)
+	cb.Font = Enum.Font.Gotham
+	cb.TextColor3 = Color3.fromRGB(255,255,255)
+	cb.TextScaled = true
+	cb.AutoButtonColor = false
+	cb.MouseButton1Click:Connect(function()
+		if farmBosses[boss] then farmBosses[boss] = nil cb.BackgroundColor3 = Color3.fromRGB(42,42,42)
+		else farmBosses[boss]=true cb.BackgroundColor3 = Color3.fromRGB(0,255,127) end
+	end)
+end
+
+-- Itemlar
+local ItemLabel = Instance.new("TextLabel", PanelAuto)
+ItemLabel.Text = "Farmlanacak Itemlar:"
+ItemLabel.Size = UDim2.new(0.6,0,0.06,0)
+ItemLabel.Position = UDim2.new(0.03,0,0.46,0)
+ItemLabel.BackgroundTransparency = 1
+ItemLabel.Font = Enum.Font.Gotham
+ItemLabel.TextColor3 = Color3.fromRGB(255,255,255)
+ItemLabel.TextScaled = true
+
+local ItemList = Instance.new("Frame", PanelAuto)
+ItemList.Size = UDim2.new(0.94,0,0.12,0)
+ItemList.Position = UDim2.new(0.03,0,0.52,0)
+ItemList.BackgroundColor3 = Color3.fromRGB(33,33,44)
+for i,it in ipairs(worldItems) do
+	local cb = Instance.new("TextButton", ItemList)
+	cb.Name = it
+	cb.Size = UDim2.new(1/#worldItems,0,1,0)
+	cb.Position = UDim2.new((i-1)/#worldItems,0,0,0)
+	cb.Text = it
+	cb.BackgroundColor3 = Color3.fromRGB(42,42,42)
+	cb.Font = Enum.Font.Gotham
+	cb.TextColor3 = Color3.fromRGB(255,255,255)
+	cb.TextScaled = true
+	cb.AutoButtonColor = false
+	cb.MouseButton1Click:Connect(function()
+		if farmWorldItems[it] then farmWorldItems[it]=nil cb.BackgroundColor3 = Color3.fromRGB(42,42,42)
+		else farmWorldItems[it]=true cb.BackgroundColor3 = Color3.fromRGB(0,255,127) end
+	end)
+end
+
+-- Skill Seçimi (sadece örnek, gerçek skill veritabanı ile genişletilebilir)
+local SkillLabel = Instance.new("TextLabel", PanelAuto)
+SkillLabel.Text = "Skill Spam Ayarları:"
+SkillLabel.Size = UDim2.new(0.6,0,0.06,0)
+SkillLabel.Position = UDim2.new(0.03,0,0.66,0)
+SkillLabel.BackgroundTransparency = 1
+SkillLabel.Font = Enum.Font.Gotham
+SkillLabel.TextColor3 = Color3.fromRGB(255,255,255)
+SkillLabel.TextScaled = true
+
+local SkillFrame = Instance.new("Frame", PanelAuto)
+SkillFrame.Size = UDim2.new(0.94,0,0.12,0)
+SkillFrame.Position = UDim2.new(0.03,0,0.72,0)
+SkillFrame.BackgroundColor3 = Color3.fromRGB(33,33,44)
+
+local skillNames = {"Z","X","C","V","B"}
+local selectedSkills = {}
+for i,sk in ipairs(skillNames) do
+	local cb = Instance.new("TextButton", SkillFrame)
+	cb.Name = sk
+	cb.Size = UDim2.new(1/#skillNames,0,1,0)
+	cb.Position = UDim2.new((i-1)/#skillNames,0,0,0)
+	cb.Text = sk
+	cb.BackgroundColor3 = Color3.fromRGB(42,42,42)
+	cb.Font = Enum.Font.Gotham
+	cb.TextColor3 = Color3.fromRGB(255,255,255)
+	cb.TextScaled = true
+	cb.AutoButtonColor = false
+	cb.MouseButton1Click:Connect(function()
+		if selectedSkills[sk] then selectedSkills[sk]=nil cb.BackgroundColor3 = Color3.fromRGB(42,42,42)
+		else selectedSkills[sk]=true cb.BackgroundColor3 = Color3.fromRGB(0,255,127) end
+	end)
+end
+
+-- Durum ve Başlat / Durdur
+local StatusLab = Instance.new("TextLabel", PanelAuto)
+StatusLab.Text = "Durum: "..statusText
+StatusLab.Size = UDim2.new(0.7,0,0.05,0)
+StatusLab.Position = UDim2.new(0.03,0,0.87,0)
+StatusLab.BackgroundTransparency = 1
+StatusLab.Font = Enum.Font.Gotham
+StatusLab.TextColor3 = Color3.fromRGB(255,255,255)
+StatusLab.TextScaled = true
+
+local StartBtn = Instance.new("TextButton", PanelAuto)
+StartBtn.Text = "Başlat"
+StartBtn.Size = UDim2.new(0.25,0,0.05,0)
+StartBtn.Position = UDim2.new(0.73,0,0.87,0)
+StartBtn.BackgroundColor3 = Color3.fromRGB(0,255,127)
+StartBtn.Font = Enum.Font.Gotham
+StartBtn.TextColor3 = Color3.fromRGB(33,33,33)
+StartBtn.TextScaled = true
+
+-- Webhook Panel
+local WebhookLabel = Instance.new("TextLabel", PanelWebhook)
+WebhookLabel.Text = "Discord Webhook Linki:"
+WebhookLabel.Size = UDim2.new(0.5,0,0.06,0)
+WebhookLabel.Position = UDim2.new(0.03,0,0.02,0)
+WebhookLabel.BackgroundTransparency = 1
+WebhookLabel.Font = Enum.Font.Gotham
+WebhookLabel.TextColor3 = Color3.fromRGB(255,255,255)
+WebhookLabel.TextScaled = true
+
+local WebhookBox = Instance.new("TextBox", PanelWebhook)
+WebhookBox.Text = ""
+WebhookBox.PlaceholderText = "https://discord.com/api/webhooks/..."
+WebhookBox.Size = UDim2.new(0.7,0,0.06,0)
+WebhookBox.Position = UDim2.new(0.03,0,0.09,0)
+WebhookBox.BackgroundColor3 = Color3.fromRGB(42,42,42)
+WebhookBox.Font = Enum.Font.Gotham
+WebhookBox.TextColor3 = Color3.fromRGB(255,255,255)
+WebhookBox.TextScaled = true
+WebhookBox.FocusLost:Connect(function()
+	webhookURL = WebhookBox.Text
+end)
+
+local WhBossItem = Instance.new("TextButton", PanelWebhook)
+WhBossItem.Text = "Boss Itemleri Gönder"
+WhBossItem.Size = UDim2.new(0.45,0,0.06,0)
+WhBossItem.Position = UDim2.new(0.03,0,0.18,0)
+WhBossItem.BackgroundColor3 = Color3.fromRGB(0,255,127)
+WhBossItem.Font = Enum.Font.Gotham
+WhBossItem.TextColor3 = Color3.fromRGB(33,33,33)
+WhBossItem.TextScaled = true
+WhBossItem.AutoButtonColor = false
+WhBossItem.MouseButton1Click:Connect(function()
+	webhookOptions.bossItem = not webhookOptions.bossItem
+	WhBossItem.BackgroundColor3 = webhookOptions.bossItem and Color3.fromRGB(0,255,127) or Color3.fromRGB(42,42,42)
+end)
+
+local WhWorldItem = Instance.new("TextButton", PanelWebhook)
+WhWorldItem.Text = "Yerdeki Itemleri Gönder"
+WhWorldItem.Size = UDim2.new(0.45,0,0.06,0)
+WhWorldItem.Position = UDim2.new(0.52,0,0.18,0)
+WhWorldItem.BackgroundColor3 = Color3.fromRGB(0,255,127)
+WhWorldItem.Font = Enum.Font.Gotham
+WhWorldItem.TextColor3 = Color3.fromRGB(33,33,33)
+WhWorldItem.TextScaled = true
+WhWorldItem.AutoButtonColor = false
+WhWorldItem.MouseButton1Click:Connect(function()
+	webhookOptions.worldItem = not webhookOptions.worldItem
+	WhWorldItem.BackgroundColor3 = webhookOptions.worldItem and Color3.fromRGB(0,255,127) or Color3.fromRGB(42,42,42)
+end)
+
+local WhTest = Instance.new("TextButton", PanelWebhook)
+WhTest.Text = "Webhook Test"
+WhTest.Size = UDim2.new(0.45,0,0.06,0)
+WhTest.Position = UDim2.new(0.03,0,0.27,0)
+WhTest.BackgroundColor3 = Color3.fromRGB(255,85,127)
+WhTest.Font = Enum.Font.Gotham
+WhTest.TextColor3 = Color3.fromRGB(255,255,255)
+WhTest.TextScaled = true
+WhTest.MouseButton1Click:Connect(function()
+	sendWebhook("[TEST] Webhook bağlantısı başarılı! "..os.date("%X"))
+end)
+
+-- Drag support
+local dragging, dragInput, dragStart, startPos
+Frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = Frame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+Frame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+UIS.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+-- Oto Farm Fonksiyonları (dummy örnek mantık, oyun içi eventlere özel kodlar ile genişletilmeli)
+local function getMoneyAndLevel()
+	local money = LocalPlayer.leaderstats and LocalPlayer.leaderstats:FindFirstChild("Money") and LocalPlayer.leaderstats.Money.Value or "?"
+	local level = LocalPlayer.leaderstats and LocalPlayer.leaderstats:FindFirstChild("Level") and LocalPlayer.leaderstats.Level.Value or "?"
+	return money, level
+end
+
+local function announceFound(typ, name)
+	local money, level = getMoneyAndLevel()
+	local msg = string.format("[FULL OTOMATİK]\nKategori: %s\nItem: %s\nOyuncu: %s\nSaat: %s\nPara: %s\nSeviye: %s", typ, name, LocalPlayer.Name, os.date("%X"), money, level)
+	sendWebhook(msg)
+end
+
+local farmThread = nil
+local function startAutoFarm()
+	if farmThread then return end
+	autoFarmActive = true
+	statusText = "Başladı"
+	StatusLab.Text = "Durum: "..statusText
+	farmThread = coroutine.create(function()
+		while autoFarmActive do
+			-- 1. Boss kontrol
+			for _,boss in ipairs(bosses) do
+				if farmBosses[boss] and Workspace.Bosses:FindFirstChild(boss) then
+					statusText = boss.." bulundu, saldırılıyor"
+					StatusLab.Text = "Durum: "..statusText
+					-- Oto saldırı (örnek, skill spam + m1)
+					for skill,_ in pairs(selectedSkills) do
+						ReplicatedStorage.Events:FindFirstChild(skill):FireServer()
+						wait(0.15)
+					end
+					ReplicatedStorage.Events.M1:FireServer()
+					wait(0.2)
+					if webhookOptions.bossItem then
+						for _,it in ipairs(bossItems) do
+							if Workspace.ItemSpawns:FindFirstChild(it) then
+								announceFound("Boss Item", it)
+							end
+						end
+					end
+				end
+			end
+
+			-- 2. Item kontrol
+			for _,it in ipairs(worldItems) do
+				if farmWorldItems[it] and Workspace.ItemSpawns:FindFirstChild(it) then
+					statusText = it.." bulundu, alınıyor"
+					StatusLab.Text = "Durum: "..statusText
+					-- Oto pickup
+					LocalPlayer.Character.HumanoidRootPart.CFrame = Workspace.ItemSpawns[it].CFrame
+					wait(0.2)
+					if webhookOptions.worldItem then
+						announceFound("World Item", it)
+					end
+				end
+			end
+
+			-- 3. Dungeon farm (örnek, gerçek teleport ve farm eventleri eklenmeli)
+			if selectedDungeon then
+				statusText = "Dungeon: "..selectedDungeon.." farm"
+				StatusLab.Text = "Durum: "..statusText
+				-- Dummy: Dungeon teleport event
+				if ReplicatedStorage:FindFirstChild("Events") and ReplicatedStorage.Events:FindFirstChild("TeleportDungeon") then
+					ReplicatedStorage.Events.TeleportDungeon:FireServer(selectedDungeon)
+				end
+				-- Skill spam
+				for skill,_ in pairs(selectedSkills) do
+					ReplicatedStorage.Events:FindFirstChild(skill):FireServer()
+					wait(0.15)
+				end
+				ReplicatedStorage.Events.M1:FireServer()
+				wait(1)
+			end
+			wait(0.2)
+		end
+		statusText = "Durduruldu"
+		StatusLab.Text = "Durum: "..statusText
+	end)
+	coroutine.resume(farmThread)
+end
+
+local function stopAutoFarm()
+	autoFarmActive = false
+	statusText = "Durduruldu"
+	StatusLab.Text = "Durum: "..statusText
+	farmThread = nil
+end
+
+StartBtn.MouseButton1Click:Connect(function()
+	if autoFarmActive then
+		stopAutoFarm()
+		StartBtn.Text = "Başlat"
+		StartBtn.BackgroundColor3 = Color3.fromRGB(0,255,127)
+	else
+		startAutoFarm()
+		StartBtn.Text = "Durdur"
+		StartBtn.BackgroundColor3 = Color3.fromRGB(255,85,127)
+	end
+end)
+
+-- GUI Sonu
+
+print("[847q] FULL OTOMATİK GUI yüklendi!")
