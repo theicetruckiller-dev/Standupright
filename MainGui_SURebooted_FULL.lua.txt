@@ -1,0 +1,646 @@
+-- Stand Upright: Rebooted | Hüseyin GUI + FULL OTOMATİK EKLERİ (theicetruckiller-dev)
+-- Birebir eski GUI + yeni istekler: Farm Items seçimi, Auto M1 + Skill Panel, Webhook Panel
+
+-- [1] GUI OLUŞTURMA - ESKİ GÖRÜNTÜ BİREBİR
+local MainGui = Instance.new("ScreenGui")
+MainGui.Name = "MainGui"
+MainGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local Frame = Instance.new("Frame")
+Frame.Parent = MainGui
+Frame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+Frame.BorderColor3 = Color3.fromRGB(33, 33, 33)
+Frame.BorderSizePixel = 4
+Frame.Position = UDim2.new(0.0993,0,0.3053,0)
+Frame.Size = UDim2.new(0.2776,0,0.5364,0)
+
+local ASada = Instance.new("TextButton")
+ASada.Name = "ASada"
+ASada.Parent = Frame
+ASada.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
+ASada.BackgroundTransparency = 1.000
+ASada.Position = UDim2.new(0.1955, 0, 0, 0)
+ASada.Size = UDim2.new(0.6088, 0, 0.1159, 0)
+ASada.Font = Enum.Font.Jura
+ASada.Text = "Stand Upright: Rebooted"
+ASada.TextColor3 = Color3.fromRGB(255, 85, 127)
+ASada.TextSize = 27.000
+
+-- [2] ESKİ BUTONLAR (Aynen korundu)
+local butonlar = {
+    {name="Speed",    txt="Speed",         pos=UDim2.new(0.0357,0,0.8066,0)},
+    {name="Speed2",   txt="Farm Items",    pos=UDim2.new(0.0357,0,0.6226,0)},
+    {name="Speed3",   txt="Sell Ketchup",  pos=UDim2.new(0.0357,0,0.4386,0)},
+    {name="Speed4",   txt="Backpack",      pos=UDim2.new(0.0357,0,0.2546,0)},
+    {name="Speed5",   txt="Auto M1",       pos=UDim2.new(0.3557,0,0.4386,0)},
+    {name="Speed6",   txt="Anti Afk",      pos=UDim2.new(0.3557,0,0.6226,0)},
+    {name="Speed7",   txt="Rokaka",        pos=UDim2.new(0.3557,0,0.8066,0)},
+    {name="Speed8",   txt="Use S. Arrow",  pos=UDim2.new(0.6824,0,0.8066,0)},
+    {name="Speed10",  txt="Use C. Arrow",  pos=UDim2.new(0.6824,0,0.6226,0)},
+    {name="Speed11",  txt="Use R. Arrow",  pos=UDim2.new(0.6824,0,0.4386,0)},
+    {name="Speed12",  txt="Use C. Orb",    pos=UDim2.new(0.6824,0,0.2546,0)},
+    {name="Speed13",  txt="Use G. Baby",   pos=UDim2.new(0.3557,0,0.2546,0)},
+}
+for _,b in ipairs(butonlar) do
+    local btn = Instance.new("TextButton")
+    btn.Name = b.name
+    btn.Parent = Frame
+    btn.BackgroundColor3 = Color3.fromRGB(255, 85, 127)
+    btn.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BorderSizePixel = 0
+    btn.Position = b.pos
+    btn.Size = UDim2.new(0.2866, 0, 0.1159, 0)
+    btn.Font = Enum.Font.Jura
+    btn.Text = b.txt
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 19
+    btn.TextStrokeColor3 = Color3.fromRGB(47, 15, 0)
+end
+
+local ImageLabel = Instance.new("ImageLabel")
+ImageLabel.Parent = Frame
+ImageLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel.BackgroundTransparency = 1.000
+ImageLabel.Position = UDim2.new(0.4978, 0, 0.4966, 0)
+ImageLabel.Size = UDim2.new(1.1206, 0, 1.1539, 0)
+ImageLabel.ZIndex = 0
+ImageLabel.Image = "http://www.roblox.com/asset/?id=6906809185"
+ImageLabel.ImageColor3 = Color3.fromRGB(255, 85, 127)
+
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint.Parent = Frame
+UIAspectRatioConstraint.AspectRatio = 1.800
+
+-- Sağdaki Frame_2 (Teleports ve yeniler için)
+local Frame_2 = Instance.new("Frame")
+Frame_2.Parent = Frame
+Frame_2.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+Frame_2.BorderSizePixel = 0
+Frame_2.Position = UDim2.new(1.0444, 0, 0, 0)
+Frame_2.Size = UDim2.new(0.2444, 0, 0.9960, 0)
+Frame_2.ZIndex = -1
+
+local TextButton = Instance.new("TextButton")
+TextButton.Parent = Frame_2
+TextButton.BackgroundColor3 = Color3.fromRGB(255, 85, 127)
+TextButton.BorderSizePixel = 0
+TextButton.Size = UDim2.new(1, 0, 0.1164, 0)
+TextButton.Font = Enum.Font.Jura
+TextButton.Text = "Teleports"
+TextButton.TextColor3 = Color3.fromRGB(221, 221, 221)
+TextButton.TextSize = 22.000
+
+local tps = {
+    {name="A1",   txt="Inner Sanctum",  pos=0.2048, c=CFrame.new(27959, 30, -113)},
+    {name="A3",   txt="D4c Dimension",  pos=0.3293, c=CFrame.new(11927, -3, -4466)},
+    {name="A1_2", txt="Stand Storage",  pos=0.4578, func=function() workspace:FindFirstChild("hello exploiter why u see the Annoying Orange").ratio.Done:FireServer() end},
+    {name="A3_2", txt="Sewer",          pos=0.5863, c=CFrame.new(-5306, -450, -3796)},
+    {name="A2",   txt="Rarity Boards",  pos=0.7108, c=CFrame.new(-668, 68, -440)},
+    {name="A2_2", txt="Vehicle Shop",   pos=0.8433, c=CFrame.new(-182, 79, -1076)},
+}
+for _,tp in ipairs(tps) do
+    local btn = Instance.new("TextButton")
+    btn.Name = tp.name
+    btn.Parent = Frame_2
+    btn.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+    btn.BorderSizePixel = 0
+    btn.Position = UDim2.new(0, 0, tp.pos, 0)
+    btn.Size = UDim2.new(1, 0, 0.0642, 0)
+    btn.Font = Enum.Font.SourceSans
+    btn.Text = tp.txt
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 14.000
+end
+
+UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint.Parent = MainGui
+UIAspectRatioConstraint.AspectRatio = 3.479
+
+-- [3] YENİ PANEL: FARM ITEMS SEÇİMİ (Popup)
+local itemsFullList = {
+    "Stand Arrow","Rokakaka","Cursed Orb","Requiem Arrow","Green Baby",
+    "Charged Arrow","Saint's Corpse Rib","Saint's Corpse Heart","Saint's Corpse Spine",
+    "Saint's Corpse Arm","DIO's Diary","Heaven Arrow","Kars Mask"
+}
+local farmItemsSelected = {}
+local itemPanelVisible = false
+
+local FarmPanel = Instance.new("Frame")
+FarmPanel.Parent = MainGui
+FarmPanel.BackgroundColor3 = Color3.fromRGB(25,25,25)
+FarmPanel.BorderSizePixel = 3
+FarmPanel.Position = UDim2.new(0.36,0,0.32,0)
+FarmPanel.Size = UDim2.new(0.18,0,0.35,0)
+FarmPanel.Visible = false
+FarmPanel.Active = true
+
+local FarmPanelLabel = Instance.new("TextLabel")
+FarmPanelLabel.Parent = FarmPanel
+FarmPanelLabel.BackgroundTransparency = 1
+FarmPanelLabel.Size = UDim2.new(1,0,0.12,0)
+FarmPanelLabel.Text = "Farmlanacak Itemlar"
+FarmPanelLabel.Font = Enum.Font.Jura
+FarmPanelLabel.TextScaled = true
+FarmPanelLabel.TextColor3 = Color3.fromRGB(255,85,127)
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Parent = FarmPanel
+closeBtn.Size = UDim2.new(0.23,0,0.13,0)
+closeBtn.Position = UDim2.new(0.76,0,0,0)
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.Jura
+closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeBtn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+closeBtn.TextScaled = true
+
+closeBtn.MouseButton1Click:Connect(function()
+    FarmPanel.Visible = false
+    itemPanelVisible = false
+end)
+
+local FarmItemsScroller = Instance.new("ScrollingFrame")
+FarmItemsScroller.Parent = FarmPanel
+FarmItemsScroller.BackgroundTransparency = 1
+FarmItemsScroller.Size = UDim2.new(1,0,0.8,0)
+FarmItemsScroller.Position = UDim2.new(0,0,0.15,0)
+FarmItemsScroller.CanvasSize = UDim2.new(0,0,0,#itemsFullList*0.2)
+FarmItemsScroller.ScrollBarThickness = 6
+
+for i,itm in ipairs(itemsFullList) do
+    local btn = Instance.new("TextButton")
+    btn.Parent = FarmItemsScroller
+    btn.Size = UDim2.new(0.9,0,0.12,0)
+    btn.Position = UDim2.new(0.05,0,(i-1)*0.13,0)
+    btn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+    btn.Text = itm
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Font = Enum.Font.Jura
+    btn.TextScaled = true
+    btn.AutoButtonColor = false
+    btn.MouseButton1Click:Connect(function()
+        farmItemsSelected[itm] = not farmItemsSelected[itm]
+        btn.BackgroundColor3 = farmItemsSelected[itm] and Color3.fromRGB(0,255,127) or Color3.fromRGB(42,42,42)
+    end)
+end
+
+-- [4] YENİ PANEL: SKILL SPAM (Popup)
+local skillList = {"Z","X","C","V","B","N"}
+local skillSelected = {}
+local skillPanelVisible = false
+
+local SkillPanel = Instance.new("Frame")
+SkillPanel.Parent = MainGui
+SkillPanel.BackgroundColor3 = Color3.fromRGB(25,25,25)
+SkillPanel.BorderSizePixel = 3
+SkillPanel.Position = UDim2.new(0.36,0,0.72,0)
+SkillPanel.Size = UDim2.new(0.18,0,0.22,0)
+SkillPanel.Visible = false
+SkillPanel.Active = true
+
+local SkillPanelLabel = Instance.new("TextLabel")
+SkillPanelLabel.Parent = SkillPanel
+SkillPanelLabel.BackgroundTransparency = 1
+SkillPanelLabel.Size = UDim2.new(1,0,0.19,0)
+SkillPanelLabel.Text = "Skill Spam Ayarları"
+SkillPanelLabel.Font = Enum.Font.Jura
+SkillPanelLabel.TextScaled = true
+SkillPanelLabel.TextColor3 = Color3.fromRGB(255,85,127)
+
+local closeSkillBtn = Instance.new("TextButton")
+closeSkillBtn.Parent = SkillPanel
+closeSkillBtn.Size = UDim2.new(0.23,0,0.22,0)
+closeSkillBtn.Position = UDim2.new(0.76,0,0,0)
+closeSkillBtn.Text = "X"
+closeSkillBtn.Font = Enum.Font.Jura
+closeSkillBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeSkillBtn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+closeSkillBtn.TextScaled = true
+closeSkillBtn.MouseButton1Click:Connect(function()
+    SkillPanel.Visible = false
+    skillPanelVisible = false
+end)
+
+local SkillScroller = Instance.new("Frame")
+SkillScroller.Parent = SkillPanel
+SkillScroller.BackgroundTransparency = 1
+SkillScroller.Size = UDim2.new(1,0,0.75,0)
+SkillScroller.Position = UDim2.new(0,0,0.23,0)
+
+for i,sk in ipairs(skillList) do
+    local btn = Instance.new("TextButton")
+    btn.Parent = SkillScroller
+    btn.Size = UDim2.new(0.9,0,0.18,0)
+    btn.Position = UDim2.new(0.05,0,(i-1)*0.19,0)
+    btn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+    btn.Text = sk
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Font = Enum.Font.Jura
+    btn.TextScaled = true
+    btn.AutoButtonColor = false
+    btn.MouseButton1Click:Connect(function()
+        skillSelected[sk] = not skillSelected[sk]
+        btn.BackgroundColor3 = skillSelected[sk] and Color3.fromRGB(0,255,127) or Color3.fromRGB(42,42,42)
+    end)
+end
+
+-- [5] YENİ PANEL: WEBHOOK (Popup)
+local webhookPanelVisible = false
+local webhookLink = ""
+local webhookOptions = { bossItem=true, worldItem=true }
+local WebhookPanel = Instance.new("Frame")
+WebhookPanel.Parent = MainGui
+WebhookPanel.BackgroundColor3 = Color3.fromRGB(25,25,25)
+WebhookPanel.BorderSizePixel = 3
+WebhookPanel.Position = UDim2.new(0.58,0,0.36,0)
+WebhookPanel.Size = UDim2.new(0.19,0,0.3,0)
+WebhookPanel.Visible = false
+WebhookPanel.Active = true
+
+local WebhookPanelLabel = Instance.new("TextLabel")
+WebhookPanelLabel.Parent = WebhookPanel
+WebhookPanelLabel.BackgroundTransparency = 1
+WebhookPanelLabel.Size = UDim2.new(1,0,0.18,0)
+WebhookPanelLabel.Text = "Webhook Ayarları"
+WebhookPanelLabel.Font = Enum.Font.Jura
+WebhookPanelLabel.TextScaled = true
+WebhookPanelLabel.TextColor3 = Color3.fromRGB(255,85,127)
+
+local whcloseBtn = Instance.new("TextButton")
+whcloseBtn.Parent = WebhookPanel
+whcloseBtn.Size = UDim2.new(0.23,0,0.22,0)
+whcloseBtn.Position = UDim2.new(0.76,0,0,0)
+whcloseBtn.Text = "X"
+whcloseBtn.Font = Enum.Font.Jura
+whcloseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+whcloseBtn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+whcloseBtn.TextScaled = true
+whcloseBtn.MouseButton1Click:Connect(function()
+    WebhookPanel.Visible = false
+    webhookPanelVisible = false
+end)
+
+local whBox = Instance.new("TextBox")
+whBox.Parent = WebhookPanel
+whBox.PlaceholderText = "Discord Webhook Linki"
+whBox.Text = ""
+whBox.Size = UDim2.new(0.96,0,0.15,0)
+whBox.Position = UDim2.new(0.02,0,0.21,0)
+whBox.BackgroundColor3 = Color3.fromRGB(42,42,42)
+whBox.Font = Enum.Font.Jura
+whBox.TextColor3 = Color3.fromRGB(255,255,255)
+whBox.TextScaled = true
+whBox.FocusLost:Connect(function()
+    webhookLink = whBox.Text
+end)
+
+local whBossItem = Instance.new("TextButton")
+whBossItem.Parent = WebhookPanel
+whBossItem.Text = "Boss Item Bildirimi"
+whBossItem.Size = UDim2.new(0.45,0,0.13,0)
+whBossItem.Position = UDim2.new(0.05,0,0.39,0)
+whBossItem.BackgroundColor3 = Color3.fromRGB(0,255,127)
+whBossItem.Font = Enum.Font.Jura
+whBossItem.TextColor3 = Color3.fromRGB(33,33,33)
+whBossItem.TextScaled = true
+whBossItem.AutoButtonColor = false
+whBossItem.MouseButton1Click:Connect(function()
+    webhookOptions.bossItem = not webhookOptions.bossItem
+    whBossItem.BackgroundColor3 = webhookOptions.bossItem and Color3.fromRGB(0,255,127) or Color3.fromRGB(42,42,42)
+end)
+
+local whWorldItem = Instance.new("TextButton")
+whWorldItem.Parent = WebhookPanel
+whWorldItem.Text = "Yerdeki Item Bildirimi"
+whWorldItem.Size = UDim2.new(0.45,0,0.13,0)
+whWorldItem.Position = UDim2.new(0.52,0,0.39,0)
+whWorldItem.BackgroundColor3 = Color3.fromRGB(0,255,127)
+whWorldItem.Font = Enum.Font.Jura
+whWorldItem.TextColor3 = Color3.fromRGB(33,33,33)
+whWorldItem.TextScaled = true
+whWorldItem.AutoButtonColor = false
+whWorldItem.MouseButton1Click:Connect(function()
+    webhookOptions.worldItem = not webhookOptions.worldItem
+    whWorldItem.BackgroundColor3 = webhookOptions.worldItem and Color3.fromRGB(0,255,127) or Color3.fromRGB(42,42,42)
+end)
+
+local whTest = Instance.new("TextButton")
+whTest.Parent = WebhookPanel
+whTest.Text = "Webhook Test"
+whTest.Size = UDim2.new(0.9,0,0.13,0)
+whTest.Position = UDim2.new(0.05,0,0.55,0)
+whTest.BackgroundColor3 = Color3.fromRGB(255,85,127)
+whTest.Font = Enum.Font.Jura
+whTest.TextColor3 = Color3.fromRGB(255,255,255)
+whTest.TextScaled = true
+whTest.MouseButton1Click:Connect(function()
+    if webhookLink == "" then return end
+    local http = (syn and syn.request) or (http and http.request) or http_request or request
+    if not http then return end
+    http({
+        Url = webhookLink,
+        Method = "POST",
+        Headers = {["Content-Type"] = "application/json"},
+        Body = game:GetService("HttpService"):JSONEncode({content = "@everyone\nWebhook bağlantısı başarılı! "..os.date("%X")})
+    })
+end)
+
+-- [6] DRAG SUPPORT (Frame ve Popuplar)
+local UIS = game:GetService("UserInputService")
+local function makeDraggable(gui)
+    local dragging, dragInput, dragStart, startPos
+    gui.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = gui.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
+    gui.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    UIS.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+makeDraggable(Frame)
+makeDraggable(FarmPanel)
+makeDraggable(SkillPanel)
+makeDraggable(WebhookPanel)
+
+-- [7] BUTON İŞLEVLERİ - KODLAR
+-- Speed (WalkSpeed)
+Frame.Speed.MouseButton1Click:Connect(function()
+    getgenv().WalkSpeedValue = 50
+    local Player = game:service'Players'.LocalPlayer
+    Player.Character.Humanoid:GetPropertyChangedSignal'WalkSpeed':Connect(function()
+        Player.Character.Humanoid.WalkSpeed = getgenv().WalkSpeedValue
+    end)
+    Player.Character.Humanoid.WalkSpeed = getgenv().WalkSpeedValue
+end)
+-- Farm Items (Popup aç, farm başlat)
+Frame.Speed2.MouseButton1Click:Connect(function()
+    FarmPanel.Visible = not FarmPanel.Visible
+    itemPanelVisible = FarmPanel.Visible
+end)
+-- Sell Ketchup
+Frame.Speed3.MouseButton1Click:Connect(function()
+    while wait() do
+        game.ReplicatedStorage.Events.SellKetchup:FireServer("Lots")
+    end
+end)
+-- Backpack
+Frame.Speed4.MouseButton1Click:Connect(function()
+    local mouse = game.Players.LocalPlayer:GetMouse()
+    local GUI = game.CoreGui
+    local Back = GUI.RobloxGui.Backpack
+    Back.Visible = true
+    mouse.KeyDown:Connect(function(key)
+        if key == "q" then
+            Back.Inventory.Visible = not Back.Inventory.Visible
+        end
+    end)
+end)
+-- Auto M1 (SkillPanel aç, spam başlat)
+Frame.Speed5.MouseButton1Click:Connect(function()
+    if not skillPanelVisible then
+        SkillPanel.Visible = true
+        skillPanelVisible = true
+        return
+    end
+    -- auto M1 + skill spam başlat
+    while wait(0.22) do
+        pcall(function()
+            game:GetService("Players").LocalPlayer.Character.StandEvents.M1:FireServer()
+            for sk,_ in pairs(skillSelected) do
+                if skillSelected[sk] then
+                    local ev = game.ReplicatedStorage.Events:FindFirstChild(sk)
+                    if ev then ev:FireServer() end
+                end
+            end
+        end)
+    end
+end)
+-- Anti Afk
+Frame.Speed6.MouseButton1Click:Connect(function()
+    local vu = game:GetService("VirtualUser")
+    game:GetService("Players").LocalPlayer.Idled:connect(function()
+        vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        wait(1)
+        vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+    end)
+end)
+-- Rokaka
+Frame.Speed7.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local player = Players:FindFirstChildOfClass('Player')
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local tool = player.Backpack:FindFirstChild("Rokakaka")
+            if tool then humanoid:EquipTool(tool) end
+        end
+    end
+    game:GetService("Players").LocalPlayer.Character.Rokakaka.Use:FireServer()
+end)
+-- Use S. Arrow
+Frame.Speed8.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local player = Players:FindFirstChildOfClass('Player')
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local tool = player.Backpack:FindFirstChild("Stand Arrow")
+            if tool then humanoid:EquipTool(tool) end
+        end
+    end
+    game:GetService("Players").LocalPlayer.Character:FindFirstChild("Stand Arrow").Use:FireServer()
+end)
+-- Use C. Arrow
+Frame.Speed10.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local player = Players:FindFirstChildOfClass('Player')
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local tool = player.Backpack:FindFirstChild("Charged Arrow")
+            if tool then humanoid:EquipTool(tool) end
+        end
+    end
+    game:GetService("Players").LocalPlayer.Character:FindFirstChild("Charged Arrow").Use:FireServer()
+end)
+-- Use R. Arrow
+Frame.Speed11.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local player = Players:FindFirstChildOfClass('Player')
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local tool = player.Backpack:FindFirstChild("Requiem Arrow")
+            if tool then humanoid:EquipTool(tool) end
+        end
+    end
+    game:GetService("Players").LocalPlayer.Character:FindFirstChild("Requiem Arrow").Use:FireServer()
+end)
+-- Use C. Orb
+Frame.Speed12.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local player = Players:FindFirstChildOfClass('Player')
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local tool = player.Backpack:FindFirstChild("Cursed Orb")
+            if tool then humanoid:EquipTool(tool) end
+        end
+    end
+    game:GetService("Players").LocalPlayer.Character:FindFirstChild("Cursed Orb").Use:FireServer()
+end)
+-- Use G. Baby
+Frame.Speed13.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local player = Players:FindFirstChildOfClass('Player')
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local tool = player.Backpack:FindFirstChild("Green Baby")
+            if tool then humanoid:EquipTool(tool) end
+        end
+    end
+    game:GetService("Players").LocalPlayer.Character:FindFirstChild("Green Baby").Use:FireServer()
+end)
+
+-- Teleports
+for _,tp in ipairs(tps) do
+    Frame_2[tp.name].MouseButton1Click:Connect(function()
+        if tp.func then
+            tp.func()
+        else
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local humanoid = game.Players.LocalPlayer.Character.Humanoid
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            wait(0.1)
+            pl.CFrame = tp.c
+        end
+    end)
+end
+
+-- [8] OTOMATİK ITEM FARM (Seçili itemları sürekli al)
+spawn(function()
+    while wait(2) do
+        for itm,_ in pairs(farmItemsSelected) do
+            if farmItemsSelected[itm] then
+                for _,v in pairs(workspace.ItemSpawns:GetChildren()) do
+                    if v.Name == itm then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+                        wait(0.15)
+                        -- Webhook bildir (item)
+                        if webhookLink~="" and webhookOptions.worldItem then
+                            local http = (syn and syn.request) or (http and http.request) or http_request or request
+                            if http then
+                                local money,level = "?", "?"
+                                local ls = game.Players.LocalPlayer:FindFirstChild("leaderstats")
+                                if ls then
+                                    if ls:FindFirstChild("Money") then money=ls.Money.Value end
+                                    if ls:FindFirstChild("Level") then level=ls.Level.Value end
+                                end
+                                http({
+                                    Url = webhookLink,
+                                    Method = "POST",
+                                    Headers={["Content-Type"]="application/json"},
+                                    Body=game:GetService("HttpService"):JSONEncode({
+                                        content = "@everyone\nKategori: World Item\nItem: "..itm.."\nOyuncu: "..game.Players.LocalPlayer.Name.."\nSaat: "..os.date("%X").."\nPara: "..money.."\nSeviye: "..level
+                                    })
+                                })
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- [9] ESKİ Farm Items (Yerdeki tüm itemları farmla) -- isteğe bağlı, yenisiyle aynı anda çalışmaz!
+-- Frame.Speed2.MouseButton1Click:Connect(function()
+--     for i,v in pairs(workspace.ItemSpawns:GetChildren()) do
+--         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+--         wait(0.1)
+--     end
+-- end)
+
+-- [10] Kısa yol: Sağ Frame_2'ye yeni panel açma butonları eklendi
+local extraBtns = {
+    {txt="Farm Items", panel=FarmPanel, ypos=0.034},
+    {txt="Skill Spam", panel=SkillPanel, ypos=0.16},
+    {txt="Webhook",    panel=WebhookPanel, ypos=0.29},
+}
+for _,v in ipairs(extraBtns) do
+    local btn = Instance.new("TextButton")
+    btn.Parent = Frame_2
+    btn.Size = UDim2.new(1, 0, 0.1, 0)
+    btn.Position = UDim2.new(0,0,v.ypos,0)
+    btn.BackgroundColor3 = Color3.fromRGB(255,85,127)
+    btn.Font = Enum.Font.Jura
+    btn.Text = v.txt
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.TextScaled = true
+    btn.MouseButton1Click:Connect(function()
+        v.panel.Visible = not v.panel.Visible
+    end)
+end
+
+-- [11] OTOMATİK SKILL SPAM (SkillPanel'den seçilenler)
+spawn(function()
+    while wait(0.35) do
+        for sk,_ in pairs(skillSelected) do
+            if skillSelected[sk] then
+                local ev = game.ReplicatedStorage.Events:FindFirstChild(sk)
+                if ev then
+                    pcall(function() ev:FireServer() end)
+                end
+            end
+        end
+    end
+end)
+
+-- [12] BOSS ITEM WEBHOOK (isteğe bağlı, oyun içi boss drop kontrolü eklenebilir)
+-- Boss item spawn olduğunda bildirim gönderme örneği:
+spawn(function()
+    while wait(3) do
+        if webhookLink~="" and webhookOptions.bossItem then
+            for _,itm in ipairs({"DIO's Diary","Heaven Arrow","Kars Mask"}) do
+                if workspace.ItemSpawns:FindFirstChild(itm) then
+                    local http = (syn and syn.request) or (http and http.request) or http_request or request
+                    if http then
+                        local money,level = "?", "?"
+                        local ls = game.Players.LocalPlayer:FindFirstChild("leaderstats")
+                        if ls then
+                            if ls:FindFirstChild("Money") then money=ls.Money.Value end
+                            if ls:FindFirstChild("Level") then level=ls.Level.Value end
+                        end
+                        http({
+                            Url = webhookLink,
+                            Method = "POST",
+                            Headers={["Content-Type"]="application/json"},
+                            Body=game:GetService("HttpService"):JSONEncode({
+                                content = "@everyone\nKategori: Boss Item\nItem: "..itm.."\nOyuncu: "..game.Players.LocalPlayer.Name.."\nSaat: "..os.date("%X").."\nPara: "..money.."\nSeviye: "..level
+                            })
+                        })
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- [13] GİZLİ: Skill spam/autofarm/anti-afk gibi fonksiyonlar toggle edilebilir, GUI eski görsellikte kaldı.
+
+-- [14] (ESKİ) Kodun kalan kısmı eski GUI ile aynı şekilde çalışır.
